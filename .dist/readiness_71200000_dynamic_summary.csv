@@ -1,0 +1,5 @@
+variable,file_exists,rows,date_min,date_max,coverage_start_ok,coverage_end_ok,missing_pct_best_source,variable_ready
+precipitation,True,16366,1980-01-01,2024-10-21,True,True,0.0061,True
+temperature,True,16367,1980-01-01,2024-10-22,True,True,0.1344,True
+evapotransp,True,16363,1980-01-01,2024-10-18,True,True,0.0,True
+streamflow,True,22494,1957-06-01,2018-12-31,True,True,0.0089,True
