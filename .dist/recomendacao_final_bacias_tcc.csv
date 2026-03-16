@@ -1,0 +1,3 @@
+recommendation_role,gauge_id,gauge_name,rank,has_local_dynamic_data,recommended_score,q_quality_control_perc,consumptive_use_perc,regulation_degree,reservoirs_vol,forest_perc,crop_perc,imperv_perc,rationale
+Bacia principal,71200000,vila_canoas,1,True,0.9634340598601399,100.0,0.144,0.0,0.0,86.3116,0.0,0.0,"Melhor equilibrio entre baixa intervencao humana, alta qualidade hidrologica e disponibilidade local das quatro series dinamicas."
+Bacia reserva,84520000,divisa_de_anitapolis,2,False,0.779591733564832,100.0,0.0828,0.0,0.0,93.1889,0.0447,0.0,"Melhor alternativa caso seja necessario trocar a bacia principal, mantendo alta qualidade e baixa intervencao; pode exigir coleta adicional das series dinamicas."
