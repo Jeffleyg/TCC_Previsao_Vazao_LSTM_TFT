@@ -1,0 +1,54 @@
+{
+  "study_name": "tft_recente_lb192_h30",
+  "metric": "val_loss",
+  "direction": "minimize",
+  "best_value": 8.839290618896484,
+  "best_trial": 25,
+  "best_params": {
+    "hidden_size": 32,
+    "attention_head_size": 8,
+    "dropout": 0.26279702682530187,
+    "learning_rate": 0.002090730285924567,
+    "batch_size": 64
+  },
+  "best_metrics": {
+    "MAE": 8.839292526245117,
+    "RMSE": 14.768628120422363,
+    "R2": 0.8151794672012329,
+    "NSE": 0.8151794672012329,
+    "KGE": 0.8765249624944716,
+    "sMAPE": 22.46660041809082,
+    "Q90_reference": 8.996,
+    "LogNSE": 0.8642028570175171,
+    "RMSE_dry": 2.367250442504883,
+    "n_dry_samples": 2520.0,
+    "val_loss": 8.839290618896484,
+    "use_static_features": true,
+    "static_categoricals": [],
+    "static_reals": [
+      "static_climate_aridity",
+      "static_climate_p_seasonality",
+      "static_geology_geol_permeability",
+      "static_human_intervention_regulation_degree",
+      "static_soil_bedrock_depth",
+      "static_topography_elev_mean",
+      "static_topography_slope_mean",
+      "static_topography_area"
+    ]
+  },
+  "search_config": {
+    "n_trials": 30,
+    "timeout": null,
+    "max_epochs": 15,
+    "patience": 4,
+    "data_dir": "Treino Unificado",
+    "master_csv": ".dist/71200000_master_dataset.csv",
+    "rebuild_master_dataset": false,
+    "seed": 42,
+    "train_start": "1991-01-01",
+    "train_end": "2010-12-31",
+    "test_start": "2011-01-01",
+    "test_end": "2018-12-31",
+    "val_fraction": 0.15
+  }
+}
