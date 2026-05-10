@@ -1,0 +1,42 @@
+{
+  "study_name": "lstm_passado_lb48_h30",
+  "metric": "val_loss",
+  "direction": "minimize",
+  "best_value": 0.44592341780662537,
+  "best_trial": 4,
+  "best_params": {
+    "hidden_size": 224,
+    "num_layers": 1,
+    "dropout": 0.3037724259507192,
+    "learning_rate": 0.0001786013788939711,
+    "batch_size": 128
+  },
+  "best_metrics": {
+    "MAE": 28.366535980366617,
+    "RMSE": 47.865519040195906,
+    "R2": -0.21497591875567457,
+    "NSE": -0.21497591875567457,
+    "KGE": -0.28971703605997634,
+    "sMAPE": 62.06209085256623,
+    "Q90_reference": 7.999000000000001,
+    "LogNSE": -0.038058867276239194,
+    "RMSE_dry": 12.429211633208572,
+    "n_dry_samples": 19.0,
+    "val_loss": 0.44592341780662537
+  },
+  "search_config": {
+    "n_trials": 30,
+    "timeout": null,
+    "max_epochs": 15,
+    "patience": 6,
+    "data_dir": "Treino Unificado",
+    "master_csv": ".dist/71200000_master_dataset.csv",
+    "rebuild_master_dataset": false,
+    "seed": 42,
+    "train_start": "1980-01-01",
+    "train_end": "1990-12-31",
+    "test_start": "2011-01-01",
+    "test_end": "2018-12-31",
+    "val_fraction": 0.15
+  }
+}

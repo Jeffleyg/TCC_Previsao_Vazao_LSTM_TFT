@@ -1,2 +1,0 @@
-gauge_id,verdict,dynamic_data_ready,human_intervention_ready,missing_dynamic_files,rationale
-71200000,APROVADA,True,True,0,"A bacia atende cobertura temporal, faltantes maximos e criterios de intervencao humana."

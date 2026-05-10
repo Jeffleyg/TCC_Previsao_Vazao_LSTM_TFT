@@ -1,0 +1,2 @@
+study_name,model,period,lookback,horizon,status,nse,kge,mae,val_loss,best_trial,best_json,error
+tft_recente_lb144_h7,tft,recente,144,7,success,0.848186194896698,0.8704581533682785,7.450224876403809,7.450224876403809,29,/content/drive/MyDrive/finish/TCC Projeto2/.dist/optuna/tft_recente_lb144_h7_best.json,

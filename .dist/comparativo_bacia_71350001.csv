@@ -1,6 +1,0 @@
-rank,gauge_id,gauge_name,gauge_lat,area,has_local_dynamic_data,consumptive_use_perc,regulation_degree,reservoirs_vol,q_quality_control_perc,q_stream_stage_perc,forest_perc,crop_perc,imperv_perc,dom_land_cover,recommended_score
-1,71200000,vila_canoas,-27.8028,1003.974,True,0.144,0.0,0.0,100.0,80.849,86.3116,0.0,0.0,forest,0.9634340598601399
-2,84520000,divisa_de_anitapolis,-27.9956,375.7677,False,0.0828,0.0,0.0,100.0,97.577,93.1889,0.0447,0.0,forest,0.779591733564832
-3,59370000,fazenda_fortaleza,-22.96,637.3362,False,0.154,0.0,0.0,100.0,83.381,91.1736,0.302,0.0,forest,0.7680565002426344
-4,83345000,barra_do_prata,-26.6983,1451.856,False,0.1819,0.0,0.0,100.0,88.501,90.9075,0.1696,0.0,forest,0.7644642432523903
-5,82320000,corupa,-26.4239,187.4833,False,0.1478,0.0,0.0,100.0,72.348,87.0177,0.0454,0.0,forest,0.7638183475100192

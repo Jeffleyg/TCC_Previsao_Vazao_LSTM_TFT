@@ -1,0 +1,49 @@
+{
+  "feature_importance": {
+    "precipitation": 92.07034388994188,
+    "actual_evapotransp": 87.6931366123801,
+    "sin_day": 29.083006147622815,
+    "temperature": 25.36766700913502,
+    "cos_day": 23.622546809116628,
+    "sin_month": 18.491552775374508,
+    "cos_month": 13.721686287438494
+  },
+  "static_covariates": {
+    "categoricals": [],
+    "reals": [
+      "static_climate_aridity",
+      "static_climate_p_seasonality",
+      "static_geology_geol_permeability",
+      "static_human_intervention_regulation_degree",
+      "static_soil_bedrock_depth",
+      "static_topography_elev_mean",
+      "static_topography_slope_mean",
+      "static_topography_area"
+    ],
+    "all": [
+      "static_climate_aridity",
+      "static_climate_p_seasonality",
+      "static_geology_geol_permeability",
+      "static_human_intervention_regulation_degree",
+      "static_soil_bedrock_depth",
+      "static_topography_elev_mean",
+      "static_topography_slope_mean",
+      "static_topography_area"
+    ]
+  },
+  "temporal_features": [
+    "precipitation",
+    "temperature",
+    "actual_evapotransp",
+    "sin_day",
+    "cos_day",
+    "sin_month",
+    "cos_month"
+  ],
+  "total_features": 7,
+  "top_features": [
+    "precipitation",
+    "actual_evapotransp",
+    "sin_day"
+  ]
+}
