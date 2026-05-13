@@ -62,7 +62,7 @@ def load_daily_series(data_dir: Path, station_id: str) -> pd.DataFrame:
     }
 
     frames: list[pd.DataFrame] = []
-    for source_name, file_path in file_map.items():
+    for file_path in file_map.values():
         frame = build_daily_frame(read_space_separated_table(file_path))
         frame = frame.sort_values("date")
         frames.append(frame)
@@ -351,6 +351,82 @@ def build_training_ready_splits(
     return split_dataframes_by_period(curated)
 
 
+def build_adaptive_monthly_window_grid(
+    df: pd.DataFrame,
+    window_min_months: int = 1,
+    window_max_months: int = 24,
+    target_periods: tuple[str, ...] = ("Teste",),
+    required_columns: list[str] | None = None,
+    require_complete_data: bool = True,
+) -> pd.DataFrame:
+    if window_min_months < 1:
+        raise ValueError("window_min_months deve ser >= 1")
+    if window_max_months < window_min_months:
+        raise ValueError("window_max_months deve ser >= window_min_months")
+
+    if required_columns is None:
+        required_columns = ["streamflow_m3s", *RECOMMENDED_DYNAMIC_FEATURES]
+
+    data = df.copy()
+    data["month_start"] = data["date"].dt.to_period("M").dt.to_timestamp()
+
+    month_period = (
+        data.groupby("month_start", as_index=False)["period"]
+        .agg(lambda values: pd.NA if values.dropna().empty else values.dropna().iloc[0])
+    )
+    month_period = month_period.loc[month_period["period"].isin(target_periods)].copy()
+    target_months = month_period["month_start"].sort_values().tolist()
+
+    rows: list[dict[str, object]] = []
+    for target_start in target_months:
+        target_end = target_start + pd.offsets.MonthEnd(0)
+        target_label = target_start.strftime("%Y-%m")
+
+        for window_months in range(window_min_months, window_max_months + 1):
+            input_start = target_start - pd.DateOffset(months=window_months)
+            input_end = target_start - pd.Timedelta(days=1)
+
+            input_mask = (data["date"] >= input_start) & (data["date"] <= input_end)
+            target_mask = (data["date"] >= target_start) & (data["date"] <= target_end)
+
+            input_rows = data.loc[input_mask].copy()
+            target_rows = data.loc[target_mask].copy()
+
+            input_month_count = int(input_rows["date"].dt.to_period("M").nunique())
+            has_full_input_months = input_month_count == window_months
+            has_target_month = not target_rows.empty
+
+            cols_to_check = [column for column in required_columns if column in data.columns]
+            input_missing = int(input_rows[cols_to_check].isna().sum().sum()) if cols_to_check else 0
+            target_missing = int(target_rows[cols_to_check].isna().sum().sum()) if cols_to_check else 0
+            has_complete_data = input_missing == 0 and target_missing == 0
+
+            is_candidate = has_full_input_months and has_target_month
+            if require_complete_data:
+                is_candidate = is_candidate and has_complete_data
+
+            rows.append(
+                {
+                    "target_month": target_label,
+                    "window_months": window_months,
+                    "input_start_date": input_start,
+                    "input_end_date": input_end,
+                    "target_start_date": target_start,
+                    "target_end_date": target_end,
+                    "input_rows": int(len(input_rows)),
+                    "target_rows": int(len(target_rows)),
+                    "has_full_input_months": has_full_input_months,
+                    "has_target_month": has_target_month,
+                    "input_missing_values": input_missing,
+                    "target_missing_values": target_missing,
+                    "has_complete_data": has_complete_data,
+                    "is_candidate": is_candidate,
+                }
+            )
+
+    return pd.DataFrame(rows).sort_values(["target_month", "window_months"]).reset_index(drop=True)
+
+
 def build_timeseries_dataset(
     df: pd.DataFrame,
     target: str = "streamflow_m3s",
@@ -459,6 +535,34 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Exporta CSVs curados para treino, removendo o inicio sem vazao e variaveis com cobertura fraca.",
     )
+    parser.add_argument(
+        "--export-adaptive-window-grid",
+        action="store_true",
+        help="Exporta grade de janelas mensais para LSTM (ex.: 1 a 24 meses anteriores por mes-alvo).",
+    )
+    parser.add_argument(
+        "--window-min-months",
+        type=int,
+        default=1,
+        help="Menor tamanho da janela mensal para o grid adaptativo.",
+    )
+    parser.add_argument(
+        "--window-max-months",
+        type=int,
+        default=24,
+        help="Maior tamanho da janela mensal para o grid adaptativo.",
+    )
+    parser.add_argument(
+        "--window-target-periods",
+        type=str,
+        default="Teste",
+        help="Periodos alvo separados por virgula para gerar o grid (ex.: Recente,Teste).",
+    )
+    parser.add_argument(
+        "--window-allow-missing",
+        action="store_true",
+        help="Permite janelas candidatas com valores faltantes (por padrao exige dados completos).",
+    )
     return parser.parse_args()
 
 
@@ -536,6 +640,36 @@ def main() -> None:
         print(f"Treino Passado model-ready salvo em: {passado_model_path}")
         print(f"Treino Recente model-ready salvo em: {recente_model_path}")
         print(f"Treino Teste model-ready salvo em: {teste_model_path}")
+
+    if args.export_adaptive_window_grid:
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        model_ready = build_training_ready_dataset(artifacts.dataframe)
+        target_periods = tuple(period.strip() for period in args.window_target_periods.split(",") if period.strip())
+        window_grid = build_adaptive_monthly_window_grid(
+            model_ready,
+            window_min_months=args.window_min_months,
+            window_max_months=args.window_max_months,
+            target_periods=target_periods,
+            require_complete_data=not args.window_allow_missing,
+        )
+
+        grid_path = args.output_dir / "lstm_adaptive_window_grid.csv"
+        summary_path = args.output_dir / "lstm_adaptive_window_summary.csv"
+        window_grid.to_csv(grid_path, index=False)
+
+        summary = (
+            window_grid.loc[window_grid["is_candidate"]]
+            .groupby("target_month", as_index=False)
+            .agg(
+                candidate_windows=("window_months", "count"),
+                min_window_months=("window_months", "min"),
+                max_window_months=("window_months", "max"),
+            )
+        )
+        summary.to_csv(summary_path, index=False)
+
+        print(f"Grid adaptativo LSTM salvo em: {grid_path}")
+        print(f"Resumo do grid adaptativo salvo em: {summary_path}")
 
 
 if __name__ == "__main__":

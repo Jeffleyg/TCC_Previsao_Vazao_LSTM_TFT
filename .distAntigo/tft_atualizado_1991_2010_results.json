@@ -1,0 +1,57 @@
+{
+  "config": {
+    "lookback_days": 90,
+    "forecast_horizon_days": 1,
+    "batch_size": 64,
+    "hidden_size": 128,
+    "attention_head_size": 8,
+    "dropout": 0.1,
+    "learning_rate": 0.0005,
+    "max_epochs": 30,
+    "seed": 42,
+    "data_dir": "Treino Unificado",
+    "run_tag": "tft_atualizado_1991_2010",
+    "train_start": "1991-01-01",
+    "train_end": "2010-12-31",
+    "test_start": "2011-01-01",
+    "test_end": "2018-12-31",
+    "val_fraction": 0.15,
+    "model": "TemporalFusionTransformer"
+  },
+  "metrics": {
+    "validation": {
+      "MAE": 5.133938789367676,
+      "RMSE": 8.468035697937012,
+      "R2": 0.9378571510314941,
+      "NSE": 0.9378571510314941,
+      "KGE": 0.9558938877485803,
+      "sMAPE": 12.91513442993164,
+      "Q90_reference": 8.996,
+      "LogNSE": 0.9497963190078735,
+      "RMSE_dry": 0.9960235953330994,
+      "n_dry_samples": 84
+    },
+    "test": {
+      "MAE": 7.32174015045166,
+      "RMSE": 17.809226989746094,
+      "R2": 0.8892024159431458,
+      "NSE": 0.8892024159431458,
+      "KGE": 0.8431090319036473,
+      "sMAPE": 15.381437301635742,
+      "Q90_reference": 8.996,
+      "LogNSE": 0.9388132095336914,
+      "RMSE_dry": 1.2054939270019531,
+      "n_dry_samples": 328
+    }
+  },
+  "data_info": {
+    "total_days": 14250,
+    "train_days": 6209,
+    "eval_test_days": 2922,
+    "n_features_known": 8,
+    "train_start_date": "1991-01-01",
+    "train_end_date": "2007-12-31",
+    "test_start_date": "2011-01-01",
+    "test_end_date": "2018-12-31"
+  }
+}

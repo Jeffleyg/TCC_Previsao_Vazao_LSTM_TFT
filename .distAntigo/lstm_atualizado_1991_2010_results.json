@@ -1,0 +1,67 @@
+{
+  "config": {
+    "lookback_days": 90,
+    "forecast_horizon_days": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.2,
+    "learning_rate": 0.0005,
+    "batch_size": 64,
+    "max_epochs": 30,
+    "seed": 42,
+    "data_dir": "Treino Unificado",
+    "run_tag": "lstm_atualizado_1991_2010",
+    "train_start": "1991-01-01",
+    "train_end": "2010-12-31",
+    "test_start": "2011-01-01",
+    "test_end": "2018-12-31",
+    "val_fraction": 0.15,
+    "loss": "HuberLoss",
+    "target_transform": "log1p/expm1",
+    "temporal_features": [
+      "sin_day",
+      "cos_day",
+      "sin_month",
+      "cos_month"
+    ]
+  },
+  "metrics": {
+    "validation": {
+      "MAE": 5.251595006838332,
+      "RMSE": 9.385236751103472,
+      "R2": 0.9236663366639384,
+      "NSE": 0.9236663366639384,
+      "KGE": 0.937361947866356,
+      "sMAPE": 12.385406967697383,
+      "Q90_reference": 8.996000000000002,
+      "LogNSE": 0.9450564597423365,
+      "RMSE_dry": 0.8877635797640776,
+      "n_dry_samples": 84
+    },
+    "test": {
+      "MAE": 6.585123062456249,
+      "RMSE": 13.954332925665561,
+      "R2": 0.931976609469009,
+      "NSE": 0.931976609469009,
+      "KGE": 0.9629561965018586,
+      "sMAPE": 14.010400830225311,
+      "Q90_reference": 8.996000000000002,
+      "LogNSE": 0.9412943732813932,
+      "RMSE_dry": 0.9739592634075019,
+      "n_dry_samples": 328
+    }
+  },
+  "data_info": {
+    "total_days": 14250,
+    "n_train": 6209,
+    "n_val": 1096,
+    "n_test": 2922,
+    "n_features": 8,
+    "train_target_start": "1991-01-01",
+    "train_target_end": "2007-12-31",
+    "val_target_start": "2008-01-01",
+    "val_target_end": "2010-12-31",
+    "test_target_start": "2011-01-01",
+    "test_target_end": "2018-12-31"
+  }
+}

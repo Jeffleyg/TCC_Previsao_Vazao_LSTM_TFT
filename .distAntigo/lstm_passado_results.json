@@ -1,0 +1,48 @@
+{
+  "config": {
+    "lookback_days": 90,
+    "forecast_horizon_days": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.2,
+    "learning_rate": 0.0005,
+    "batch_size": 64,
+    "max_epochs": 30,
+    "seed": 42,
+    "data_dir": "Treino Passado",
+    "run_tag": "lstm_passado",
+    "loss": "HuberLoss",
+    "target_transform": "log1p/expm1",
+    "temporal_features": [
+      "sin_day",
+      "cos_day",
+      "sin_month",
+      "cos_month"
+    ]
+  },
+  "metrics": {
+    "validation": {
+      "MAE": 4.9098935783066535,
+      "RMSE": 9.114541037134513,
+      "R2": 0.9369565169148817,
+      "NSE": 0.9369565169148817,
+      "KGE": 0.9645306761481371,
+      "sMAPE": 12.599411457237043
+    },
+    "test": {
+      "MAE": 7.003585064769464,
+      "RMSE": 16.524482617674387,
+      "R2": 0.916182533635387,
+      "NSE": 0.916182533635387,
+      "KGE": 0.8694281872540264,
+      "sMAPE": 14.031915686352495
+    }
+  },
+  "data_info": {
+    "total_days": 14250,
+    "n_train": 9912,
+    "n_val": 2124,
+    "n_test": 2124,
+    "n_features": 8
+  }
+}

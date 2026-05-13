@@ -1,0 +1,38 @@
+{
+  "config": {
+    "lookback_days": 90,
+    "forecast_horizon_days": 1,
+    "batch_size": 64,
+    "hidden_size": 128,
+    "attention_head_size": 4,
+    "dropout": 0.1,
+    "learning_rate": 0.0005,
+    "max_epochs": 30,
+    "seed": 42,
+    "model": "TemporalFusionTransformer"
+  },
+  "metrics": {
+    "validation": {
+      "MAE": 4.257347583770752,
+      "RMSE": 8.20130729675293,
+      "R2": 0.9532954096794128,
+      "NSE": 0.9532954096794128,
+      "KGE": 0.958592096802047,
+      "sMAPE": 12.644452095031738
+    },
+    "test": {
+      "MAE": 4.6767964363098145,
+      "RMSE": 10.129240989685059,
+      "R2": 0.9403051733970642,
+      "NSE": 0.9403051733970642,
+      "KGE": 0.924355041884958,
+      "sMAPE": 13.006623268127441
+    }
+  },
+  "data_info": {
+    "total_days": 14250,
+    "train_end_idx": 9975,
+    "val_end_idx": 12112,
+    "n_features_known": 8
+  }
+}

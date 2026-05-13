@@ -1,0 +1,2 @@
+gauge_id,selected_lstm_lookback_days,selected_lstm_lookback_source,default_lstm_lookback_days,auto_from_events_enabled
+71200000,48,auto_event_recurrence,30,True

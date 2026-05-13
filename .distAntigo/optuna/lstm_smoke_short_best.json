@@ -1,0 +1,43 @@
+{
+  "study_name": "lstm_smoke_short",
+  "metric": "val_loss",
+  "direction": "minimize",
+  "best_value": 0.0374252125620842,
+  "best_trial": 0,
+  "best_params": {
+    "lookback_days": 60,
+    "hidden_size": 96,
+    "num_layers": 1,
+    "dropout": 0.4330880728874676,
+    "learning_rate": 0.0007725378389307352,
+    "batch_size": 128
+  },
+  "best_metrics": {
+    "MAE": 5.945048476095521,
+    "RMSE": 11.271842768316661,
+    "R2": 0.8653291126205447,
+    "NSE": 0.8653291126205447,
+    "KGE": 0.8874350276516292,
+    "sMAPE": 16.789414561203703,
+    "Q90_reference": 8.753,
+    "LogNSE": 0.9157395566982232,
+    "RMSE_dry": 2.4777109421870684,
+    "n_dry_samples": 202.0,
+    "val_loss": 0.0374252125620842
+  },
+  "search_config": {
+    "n_trials": 1,
+    "timeout": null,
+    "max_epochs": 2,
+    "patience": 6,
+    "data_dir": "Treino Unificado",
+    "master_csv": ".dist/71200000_master_dataset.csv",
+    "rebuild_master_dataset": false,
+    "seed": 42,
+    "train_start": "1980-01-01",
+    "train_end": "2010-12-31",
+    "test_start": "2011-01-01",
+    "test_end": "2018-12-31",
+    "val_fraction": 0.15
+  }
+}

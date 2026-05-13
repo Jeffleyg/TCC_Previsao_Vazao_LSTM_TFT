@@ -1,0 +1,23 @@
+[
+  {
+    "scenario": "increased_capacity",
+    "hidden_size": 128,
+    "use_log_transform": true,
+    "use_lags": false,
+    "test_loss": 0.20453844964504242
+  },
+  {
+    "scenario": "no_log_transform",
+    "hidden_size": 32,
+    "use_log_transform": false,
+    "use_lags": false,
+    "test_loss": 11.534523010253906
+  },
+  {
+    "scenario": "with_lags",
+    "hidden_size": 32,
+    "use_log_transform": true,
+    "use_lags": true,
+    "test_loss": 0.21504788100719452
+  }
+]
