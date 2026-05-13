@@ -1,0 +1,45 @@
+{
+  "config": {
+    "lookback_days": 90,
+    "forecast_horizon_days": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.2,
+    "learning_rate": 0.0005,
+    "batch_size": 64,
+    "max_epochs": 6,
+    "loss": "HuberLoss",
+    "target_transform": "log1p/expm1",
+    "temporal_features": [
+      "sin_day",
+      "cos_day",
+      "sin_month",
+      "cos_month"
+    ]
+  },
+  "metrics": {
+    "validation": {
+      "MAE": 5.152388416757241,
+      "RMSE": 9.418182878451463,
+      "R2": 0.9326860883387019,
+      "NSE": 0.9326860883387019,
+      "KGE": 0.9457021563286199,
+      "sMAPE": 13.369103061328957
+    },
+    "test": {
+      "MAE": 6.589823871212041,
+      "RMSE": 13.711162472040526,
+      "R2": 0.9422931535354953,
+      "NSE": 0.9422931535354953,
+      "KGE": 0.9051381237275404,
+      "sMAPE": 14.761769026416166
+    }
+  },
+  "data_info": {
+    "total_days": 14250,
+    "n_train": 9912,
+    "n_val": 2124,
+    "n_test": 2124,
+    "n_features": 8
+  }
+}

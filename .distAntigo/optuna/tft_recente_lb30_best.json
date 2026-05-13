@@ -1,0 +1,43 @@
+{
+  "study_name": "tft_recente_lb30",
+  "metric": "val_loss",
+  "direction": "minimize",
+  "best_value": 4.778154373168945,
+  "best_trial": 9,
+  "best_params": {
+    "hidden_size": 32,
+    "attention_head_size": 1,
+    "dropout": 0.1281323365878769,
+    "learning_rate": 0.0016155001304356408,
+    "batch_size": 32
+  },
+  "best_metrics": {
+    "MAE": 4.778154373168945,
+    "RMSE": 8.616572380065918,
+    "R2": 0.9356579780578613,
+    "NSE": 0.9356579780578613,
+    "KGE": 0.9366449849933507,
+    "sMAPE": 12.041464805603027,
+    "Q90_reference": 8.996,
+    "LogNSE": 0.9502734541893005,
+    "RMSE_dry": 0.7675538063049316,
+    "n_dry_samples": 84.0,
+    "val_loss": 4.778154373168945,
+    "use_static_features": false
+  },
+  "search_config": {
+    "n_trials": 20,
+    "timeout": null,
+    "max_epochs": 15,
+    "patience": 4,
+    "data_dir": "Treino Unificado",
+    "master_csv": ".dist/71200000_master_dataset.csv",
+    "rebuild_master_dataset": false,
+    "seed": 42,
+    "train_start": "1991-01-01",
+    "train_end": "2010-12-31",
+    "test_start": "2011-01-01",
+    "test_end": "2018-12-31",
+    "val_fraction": 0.15
+  }
+}

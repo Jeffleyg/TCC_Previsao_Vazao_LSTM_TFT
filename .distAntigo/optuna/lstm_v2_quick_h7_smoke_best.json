@@ -1,0 +1,42 @@
+{
+  "study_name": "lstm_v2_quick_h7_smoke",
+  "metric": "NSE",
+  "direction": "maximize",
+  "best_value": 0.19679803609024826,
+  "best_trial": 0,
+  "best_params": {
+    "hidden_size": 160,
+    "num_layers": 3,
+    "dropout": 0.36599697090570255,
+    "learning_rate": 0.0007661100707771367,
+    "batch_size": 32
+  },
+  "best_metrics": {
+    "MAE": 16.410357090964684,
+    "RMSE": 27.524616946181222,
+    "R2": 0.19679803609024826,
+    "NSE": 0.19679803609024826,
+    "KGE": 0.38009147625791406,
+    "sMAPE": 47.25344916493561,
+    "Q90_reference": 8.753,
+    "LogNSE": 0.4080702300429372,
+    "RMSE_dry": 4.687873186620938,
+    "n_dry_samples": 203.0,
+    "val_loss": 0.24575406312942505
+  },
+  "search_config": {
+    "n_trials": 1,
+    "timeout": null,
+    "max_epochs": 1,
+    "patience": 1,
+    "data_dir": "Treino Unificado",
+    "master_csv": ".dist/71200000_master_dataset.csv",
+    "rebuild_master_dataset": false,
+    "seed": 42,
+    "train_start": "1980-01-01",
+    "train_end": "2010-12-31",
+    "test_start": "2011-01-01",
+    "test_end": "2018-12-31",
+    "val_fraction": 0.15
+  }
+}

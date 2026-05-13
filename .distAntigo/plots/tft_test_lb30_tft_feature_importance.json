@@ -1,0 +1,17 @@
+{
+  "feature_importance": {
+    "temperature": 95.07143064099162,
+    "actual_evapotransp": 73.1993941811405,
+    "sin_day": 59.86584841970366,
+    "precipitation": 37.454011884736246,
+    "cos_day": 15.601864044243651,
+    "sin_month": 15.599452033620265,
+    "cos_month": 5.8083612168199465
+  },
+  "total_features": 7,
+  "top_features": [
+    "temperature",
+    "actual_evapotransp",
+    "sin_day"
+  ]
+}
