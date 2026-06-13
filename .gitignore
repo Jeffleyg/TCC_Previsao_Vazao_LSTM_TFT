@@ -1,0 +1,15 @@
+# Pastas de resultados e logs
+.dist/
+lightning_logs/
+__pycache__/
+
+# Arquivos temporários e de configuração
+*.pyc
+*.csv
+*.json
+*.png
+
+# Ambiente virtual
+.venv/
+env/
+venv/
