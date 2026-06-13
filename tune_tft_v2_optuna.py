@@ -139,6 +139,7 @@ def build_time_series_datasets(df: pd.DataFrame, args: argparse.Namespace, lookb
         "precipitation",
         "temperature",
         "actual_evapotransp",
+        "oni",
         "sin_day",
         "cos_day",
         "sin_month",
@@ -270,6 +271,7 @@ def extract_tft_interpretability(
     model: TemporalFusionTransformer,
     test_loader,
     training: TimeSeriesDataSet,
+    study_name: str,
     output_json: str,
     output_attention_png: str,
 ) -> None:
@@ -280,110 +282,104 @@ def extract_tft_interpretability(
         raise RuntimeError("matplotlib nao encontrado. Instale com: py -m pip install matplotlib") from exc
 
     model.eval()
-    feature_importance = {}
-    attention_weights_list = []
+    attention_prediction_horizon = max(0, int(getattr(model.hparams, "max_prediction_length", 1)) - 1)
 
     static_categoricals = list(getattr(training, "static_categoricals", []))
     static_reals = list(getattr(training, "static_reals", []))
     static_covariates = [*static_categoricals, *static_reals]
 
     with torch.no_grad():
-        for batch in test_loader:
-            try:
-                # Obtém as predições e extrai informações internas
-                predictions = model(batch)
-                
-                # Tenta acessar attention weights
-                if hasattr(model, "output_transformer") and hasattr(model.output_transformer, "attention"):
-                    att = model.output_transformer.attention
-                    if hasattr(att, "attention_weights"):
-                        attention_weights_list.append(att.attention_weights.detach().cpu().numpy())
-                
-                break  # Processa apenas o primeiro batch para demonstração
-            except Exception as e:
-                print(f"[Debug] Erro ao extrair atencao: {e}")
-                break
+        batch = next(iter(test_loader))
+        batch_x = batch[0] if isinstance(batch, (tuple, list)) else batch
+        raw_output = model(batch_x)
+        interpretation = model.interpret_output(
+            raw_output,
+            reduction="none",
+            attention_prediction_horizon=attention_prediction_horizon,
+        )
+        interpretation_mean = model.interpret_output(
+            raw_output,
+            reduction="mean",
+            attention_prediction_horizon=attention_prediction_horizon,
+        )
 
-    # Nomes das variáveis conhecidas
-    known_reals = [
-        "precipitation",
-        "temperature",
-        "actual_evapotransp",
-        "sin_day",
-        "cos_day",
-        "sin_month",
-        "cos_month",
-    ]
+    def tensor_to_percent_map(values: torch.Tensor, labels: list[str]) -> dict[str, float]:
+        array = values.detach().cpu().numpy().astype(float)
+        total = float(np.nansum(array))
+        if total <= 0.0:
+            return {label: 0.0 for label in labels}
+        normalized = (array / total) * 100.0
+        return {label: float(score) for label, score in zip(labels, normalized)}
 
-    # Calcula importância relativa simplificada
-    for i, var_name in enumerate(known_reals):
-        # Score baseado em posição (heurística)
-        feature_importance[var_name] = float(np.random.random() * 100)  # Baseline
+    encoder_importance = tensor_to_percent_map(interpretation_mean["encoder_variables"], list(model.encoder_variables))
+    decoder_importance = tensor_to_percent_map(interpretation_mean["decoder_variables"], list(model.decoder_variables))
+    static_importance = tensor_to_percent_map(interpretation_mean["static_variables"], list(model.static_variables))
+    attention_matrix = interpretation["attention"].detach().cpu().numpy()
+    if attention_matrix.ndim == 1:
+        attention_matrix = attention_matrix.reshape(1, -1)
 
-    # Se conseguimos extrair attention weights, usa eles
-    if attention_weights_list:
-        try:
-            avg_attention = np.mean(attention_weights_list, axis=0)
-            # Normaliza para 0-100
-            if avg_attention.size > 0:
-                avg_attention_norm = (avg_attention.flatten() / (np.max(avg_attention) + 1e-8)) * 100
-                for i, var_name in enumerate(known_reals):
-                    if i < len(avg_attention_norm):
-                        feature_importance[var_name] = float(avg_attention_norm[i])
-        except Exception as e:
-            print(f"[Debug] Erro ao normalizar attention: {e}")
+    def sorted_pairs(mapping: dict[str, float]) -> list[tuple[str, float]]:
+        return sorted(mapping.items(), key=lambda item: item[1], reverse=True)
 
-    # Ordena por importância
-    sorted_features = sorted(feature_importance.items(), key=lambda x: x[1], reverse=True)
+    sorted_encoder = sorted_pairs(encoder_importance)
+    sorted_decoder = sorted_pairs(decoder_importance)
+    sorted_static = sorted_pairs(static_importance)
 
     # Salva JSON
     interpretability_data = {
-        "feature_importance": dict(sorted_features),
+        "study_name": study_name,
+        "forecast_horizon": int(getattr(model.hparams, "max_prediction_length", 1)),
+        "attention_prediction_horizon": int(attention_prediction_horizon),
+        "feature_importance": dict(sorted_encoder),
+        "encoder_variables": dict(sorted_encoder),
+        "decoder_variables": dict(sorted_decoder),
+        "static_variables": dict(sorted_static),
         "static_covariates": {
             "categoricals": static_categoricals,
             "reals": static_reals,
             "all": static_covariates,
         },
-        "temporal_features": known_reals,
-        "total_features": len(known_reals),
-        "top_features": [name for name, _ in sorted_features[:3]],
+        "temporal_features": list(model.encoder_variables),
+        "total_features": len(model.encoder_variables),
+        "top_features": [name for name, _ in sorted_encoder[:3]],
+        "attention": attention_matrix.tolist(),
     }
     with open(output_json, "w", encoding="utf-8") as f:
         json.dump(interpretability_data, f, ensure_ascii=False, indent=2)
 
-    # Gera visualização
-    fig, ax = plt.subplots(figsize=(10, 6))
-    names = [name for name, _ in sorted_features]
-    scores = [score for _, score in sorted_features]
-    colors = ["#27AE60" if i < 3 else "#3498DB" for i in range(len(names))]
-
-    ax.barh(names, scores, color=colors)
-    ax.set_title("TFT - Importancia das Variáveis (Feature Importance)")
-    ax.set_xlabel("Score de Importancia")
-    ax.invert_yaxis()
-    ax.grid(axis="x", alpha=0.3)
-
-    # Top 3 features destacadas
-    top3_text = "🔝 Top 3:\n" + "\n".join([f"• {name}: {score:.1f}" for name, score in sorted_features[:3]])
-    fig.text(
-        0.99,
-        0.01,
-        top3_text,
-        ha="right",
-        va="bottom",
-        fontsize=9,
-        bbox={"facecolor": "lightyellow", "alpha": 0.9, "edgecolor": "#F39C12"},
-        family="monospace",
-    )
-
+    fig, ax = plt.subplots(figsize=(11, 5.5))
+    max_rows = min(32, attention_matrix.shape[0])
+    heatmap = attention_matrix[:max_rows]
+    image = ax.imshow(heatmap, aspect="auto", cmap="viridis", interpolation="nearest")
+    ax.set_title(f"TFT - Attention Heatmap (h={attention_prediction_horizon + 1}d)")
+    ax.set_xlabel("Time index")
+    ax.set_ylabel("Amostra")
+    fig.colorbar(image, ax=ax, label="Attention")
     fig.tight_layout()
     fig.savefig(output_attention_png, dpi=150, bbox_inches="tight")
     plt.close(fig)
-    
+
+    bars_fig, bars_ax = plt.subplots(figsize=(10, 6))
+    names = [name for name, _ in sorted_encoder]
+    scores = [score for _, score in sorted_encoder]
+    colors = ["#27AE60" if name == "oni" else "#3498DB" if i < 3 else "#95A5A6" for i, name in enumerate(names)]
+
+    bars_ax.barh(names, scores, color=colors)
+    bars_ax.set_title("TFT - Importancia das Variáveis (Encoder)")
+    bars_ax.set_xlabel("Importancia (%)")
+    bars_ax.invert_yaxis()
+    bars_ax.grid(axis="x", alpha=0.3)
+    bars_fig.tight_layout()
+
+    importance_png = output_attention_png.replace("_tft_attention_heatmap.png", "_tft_variable_importance.png")
+    bars_fig.savefig(importance_png, dpi=150, bbox_inches="tight")
+    plt.close(bars_fig)
+
     print(f"\n✅ Explicabilidade TFT:")
     print(f"   → Feature importance: {output_json}")
     print(f"   → Visualização: {output_attention_png}")
-    print(f"   → Top features: {', '.join([name for name, _ in sorted_features[:3]])}")
+    print(f"   → Visualização encoder: {importance_png}")
+    print(f"   → Top features: {', '.join([name for name, _ in sorted_encoder[:3]])}")
     if static_covariates:
         print(f"   → Static covariates: {', '.join(static_covariates)}")
 
@@ -442,7 +438,14 @@ def train_best_and_plot_hydrograph(
         try:
             interpretability_json = output_png.replace("_hydrogram_test.png", "_tft_feature_importance.json")
             interpretability_png = output_png.replace("_hydrogram_test.png", "_tft_attention_heatmap.png")
-            extract_tft_interpretability(model, test_loader, training, interpretability_json, interpretability_png)
+            extract_tft_interpretability(
+                model,
+                test_loader,
+                training,
+                args.study_name,
+                interpretability_json,
+                interpretability_png,
+            )
         except Exception as exc:
             print(f"[Aviso] Nao foi possivel gerar explicabilidade TFT: {exc}")
 
