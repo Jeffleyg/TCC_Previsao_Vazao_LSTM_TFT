@@ -1,4 +1,4 @@
-```markdown
+
 # Previsão de Vazão na Bacia do Rio Uruguai: LSTM vs. Temporal Fusion Transformer (TFT)
 
 Este repositório contém a implementação técnica e o fluxo experimental do Trabalho de Conclusão de Curso (TCC) voltado à avaliação da robustez de arquiteturas de *Deep Learning* frente à não-estacionariedade hidrológica na Bacia do Rio Uruguai.
@@ -20,8 +20,7 @@ O pipeline segue o framework **CRISP-DM**, organizado para garantir a reprodutib
 
 O fluxo de trabalho foi otimizado para o uso de GPU (CUDA 11.8).
 
-1. **Reconstrução do Dataset Mestre**:
-   ```bash
+1. Reconstrução do Dataset Mestre:
    python tune_lstm_v2_optuna.py --rebuild-master-dataset
 
 ```
