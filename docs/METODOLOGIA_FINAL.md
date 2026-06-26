@@ -85,4 +85,3 @@ O produto é um pipeline reprodutível orquestrado por `run_phase2_multi_horizon
 
 ---
 
-Se desejar, adapto este arquivo para o formato de capítulo do TCC (inserindo referências bibliográficas e texto mais elaborado), ou exporto uma versão PDF/LaTeX pronta para inclusão.
