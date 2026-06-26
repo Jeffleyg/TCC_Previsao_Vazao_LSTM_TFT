@@ -1,7 +1,5 @@
 ## 3. Metodologia
 
-Esta seção apresenta a versão final e compacta da metodologia adotada, redigida para inclusão no TCC. O estudo segue o framework CRISP‑DM (Cross Industry Standard Process for Data Mining), adaptado ao problema de previsão multi‑horizonte da vazão na bacia 71200000.
-
 ### 3.1 Compreensão do Negócio
 O objetivo é fornecer previsões operacionais de vazão com horizontes de 7, 15 e 30 dias, com foco na antecipação de episódios de seca e no suporte a decisões de alocação e gestão de recursos hídricos. O critério de sucesso é a capacidade de prever o decaimento do fluxo de base em períodos críticos.
 
