@@ -1,2 +1,0 @@
-gauge_id,attribute_found,gauge_name,q_quality_control_perc,consumptive_use_perc,regulation_degree,reservoirs_vol,forest_perc,crop_perc,imperv_perc,dom_land_cover,q_quality_ok,consumptive_ok,regulation_ok,reservoir_ok,human_intervention_ready
-71200000,True,vila_canoas,100.0,0.144,0.0,0.0,86.3116,0.0,0.0,forest,True,True,True,True,True
